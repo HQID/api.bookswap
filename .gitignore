@@ -1,0 +1,26 @@
+# 🗂️ Node Modules
+node_modules/
+npm-debug.log
+yarn.lock
+package-lock.json
+
+# 📁 Folder Build & Cache
+dist/
+build/
+.cache/
+.vscode/
+.idea/
+.DS_Store
+coverage/
+
+# 🔑 Kredensial & Konfigurasi
+.env
+config.js
+
+# 🚀 Logs & Temporary Files
+logs/
+*.log
+*.gz
+debug.log
+error.log
+output.log
