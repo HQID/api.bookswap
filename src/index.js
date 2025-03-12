@@ -18,6 +18,7 @@ mongoose.connect(MONGO_URL)
 app.use(express.urlencoded({ extended: true })); // Menangani request body form-urlencoded
 
 app.use('/', require('./routes/authRoutes'));
+app.use('/', require('./routes/bookRoutes'))
 
 
 const port = process.env.PORT

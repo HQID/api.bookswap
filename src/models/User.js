@@ -4,14 +4,15 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
     fullname: String,
     username: String,
-    gender: String,
+    gender: {type: String, enum:['Laki-laki', 'Perempuan']},
+    city: String,
     address: String,
-    telephone: Number,
+    phone: Number,
     email: {
         type: String,
         unique: true,
     },
-    password: String
+    password: String,
 });
 
 const UserModel = mongoose.model('User', userSchema);

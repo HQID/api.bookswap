@@ -3,7 +3,7 @@ const {hashPassword, comparePassword} = require('../helper/auth');
 
 const registerUser = async (req, res) => {
     try {
-        const {fullname, username, gender, address, telephone, email, password, confirmPassword} = req.body;
+        const {fullname, username, gender, city, address, phone, email, password, confirmPassword} = req.body;
 
         if(!username) {
             return res.status(400).json({error: 'Username harus diisi'});
@@ -32,8 +32,9 @@ const registerUser = async (req, res) => {
             fullname,
             username,
             gender,
+            city,
             address,
-            telephone,
+            phone,
             email,
             password: hashedPassword
         })
