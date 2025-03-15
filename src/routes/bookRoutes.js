@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
-const {addBook} = require('../controller/bookController')
+const {addBook, getBooks, getMyBooks, deleteBook} = require('../controller/bookController')
 
 // middleware
 router.use(
@@ -12,5 +12,8 @@ router.use(
 );
 
 router.post('/addBook', addBook)
+router.get('/getBooks', getBooks)
+router.get('/getMyBooks', getMyBooks)
+router.delete('/deleteBook/:id', deleteBook)
 
 module.exports = router

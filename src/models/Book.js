@@ -3,21 +3,26 @@ const { Schema } = mongoose;
 
 const bookSchema = new Schema({
     title: String,
-    owner: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    purchase: Date,
     description: String,
-    author: String,
+    authors: String,
     publisher: String,
     isbn: String,
     languange: String,
     pages: Number,
     published: Date,
     category: [String],
-    price: Number,
-    stock: Number,
     image: String,
+    location: String,
+    status: {
+        type: String,
+        enum: ['available', 'exchanged'],
+        default: 'available'
+    }
 })
 
 const BookModel = mongoose.model('Book', bookSchema);

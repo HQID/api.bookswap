@@ -4,9 +4,9 @@ const Book = require('../models/Book');
 
 const addBook = async (req, res) => {
     try {
-        const { title, author, owner, price, stock } = req.body;
+        const { title, author, userId, purchase } = req.body;
 
-        const user = await User.findById(owner);
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "User tidak ditemukan" });
         }
@@ -20,8 +20,9 @@ const addBook = async (req, res) => {
         }
         
         const buku = {
-            owner,
+            userId,
             title,
+            purchase,
             description: bookData.description || "Deskripsi tidak tersedia",
             authors: bookData.authors ? bookData.authors.join(', ') : "Penulis tidak diketahui",
             publisher: bookData.publisher || "Penerbit tidak diketahui",
@@ -30,30 +31,30 @@ const addBook = async (req, res) => {
             pages: bookData.pageCount || 0,
             published: bookData.publishedDate || "Tanggal terbit tidak diketahui",
             category: bookData.categories || ["Kategori tidak diketahui"],
-            price,
-            stock,
             image: bookData.imageLinks ? bookData.imageLinks.thumbnail : null,
-            location: user.city
+            location: user.city,
+            status: "available"
         };
 
         // Ekstrak informasi dari API
-        // const newBook = new Book({
-        //     owner,
-        //     title,
-        //     description: bookData.description || "Deskripsi tidak tersedia",
-        //     writer: bookData.authors ? bookData.authors.join(', ') : "Penulis tidak diketahui",
-        //     publisher: bookData.publisher || "Penerbit tidak diketahui",
-        //     isbn: bookData.industryIdentifiers ? bookData.industryIdentifiers[0].identifier : "ISBN tidak tersedia",
-        //     languange: bookData.language || "Bahasa tidak diketahui",
-        //     pages: bookData.pageCount || 0,
-        //     published: bookData.publishedDate || "Tanggal terbit tidak diketahui",
-        //     category: bookData.categories || ["Kategori tidak diketahui"],
-        //     price,
-        //     stock,
-        //     image: bookData.imageLinks ? bookData.imageLinks.thumbnail : null
-        // });
+        const newBook = new Book({
+            userId,
+            title,
+            purchase,
+            description: bookData.description || "Deskripsi tidak tersedia",
+            authors: bookData.authors ? bookData.authors.join(', ') : "Penulis tidak diketahui",
+            publisher: bookData.publisher || "Penerbit tidak diketahui",
+            isbn: bookData.industryIdentifiers ? bookData.industryIdentifiers[0].identifier : "ISBN tidak tersedia",
+            languange: bookData.language || "Bahasa tidak diketahui",
+            pages: bookData.pageCount || 0,
+            published: bookData.publishedDate || "Tanggal terbit tidak diketahui",
+            category: bookData.categories || ["Kategori tidak diketahui"],
+            image: bookData.imageLinks ? bookData.imageLinks.thumbnail : null,
+            location: user.city,
+            status: "available"
+        });
 
-        // await newBook.save();
+        await newBook.save();
 
         res.status(201).json({ message: "Buku berhasil ditambahkan!", data: buku });
     } catch (error) {
@@ -62,4 +63,38 @@ const addBook = async (req, res) => {
     }
 };
 
-module.exports = { addBook };
+const getBooks = async (req, res) => {
+    try {
+        const books = await Book.find({});
+        res.status(200).json({ data: books });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data buku" });
+    }
+}
+
+const getMyBooks = async (req, res) => {
+    try {
+        const books = await Book.find({ userId: req.body.userId });
+        res.status(200).json({ data: books });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data buku" });
+    }
+}
+
+const deleteBook = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const book = await Book.findByIdAndDelete(id);
+        if (!book) {
+            return res.status(404).json({ error: "Buku tidak ditemukan" });
+        }
+        res.status(200).json({ message: "Buku berhasil dihapus" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan saat menghapus buku" });
+    }
+}
+
+module.exports = { addBook, getBooks, getMyBooks, deleteBook };
