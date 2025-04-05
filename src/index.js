@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 require('dotenv').config();
 
-const MONGO_URL = process.env.MONGO_URI;
+const MONGO_URL = process.env.MONGODB_URL;
 
 app.use(express.json()); // Menangani request body JSON
 
