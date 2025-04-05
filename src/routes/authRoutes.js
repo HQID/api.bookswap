@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
-const { registerUser, loginUser } = require('../controller/authController');
+const { registerUser, loginUser, logoutUser } = require('../controller/authController');
 const rateLimit = require('express-rate-limit');
 
 // middleware
 router.use(
     cors({
         credentials: true,
-        origin: ['http://localhost:3003']
+        origin: ['http://localhost:3003', 'http://localhost:5173']
     })
 );
 
@@ -22,9 +22,7 @@ router.get('/', (req, res) => {
     res.json({message: 'Welcome to BookSwap API'});
 })
 router.post('/register', registerUser);
-router.get('/login', loginLimiter, loginUser);
-router.get('/getuser', (req, res) => {
-    res.json({message: 'Welcome to BookSwap API'});
-})
+router.post('/login', loginLimiter, loginUser);
+router.get('/logout', logoutUser)
 
 module.exports = router

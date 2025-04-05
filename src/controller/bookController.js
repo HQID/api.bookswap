@@ -5,7 +5,7 @@ const Book = require('../models/Book');
 const addBook = async (req, res) => {
     try {
         const { title, author, userId, purchase } = req.body;
-
+ 
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "User tidak ditemukan" });

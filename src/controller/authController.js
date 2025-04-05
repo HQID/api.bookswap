@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const {hashPassword, comparePassword} = require('../helper/auth');
+const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
     try {
@@ -72,7 +73,29 @@ const loginUser = async (req, res) => {
     }
 }
 
+const verifyUser = async (req, res) => {
+    const {token} = req.cookies;
+    if(!token) {
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch(e) {
+        console.log(e)
+        res.status(500).json({error: 'Internal server error'});
+    }
+}
+
+const logoutUser = async (req, res) => {
+    res.clearCookie('token');
+    return res.status(200).json({status: true});
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    verifyUser,
+    logoutUser
 }
