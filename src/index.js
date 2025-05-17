@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
 
 const MONGO_URL = process.env.MONGODB_URL;
 
@@ -15,6 +16,7 @@ mongoose.connect(MONGO_URL)
     console.error('❌ Koneksi MongoDB gagal:', err);
 });
 
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true })); // Menangani request body form-urlencoded
 
 app.use('/', require('./routes/authRoutes'));

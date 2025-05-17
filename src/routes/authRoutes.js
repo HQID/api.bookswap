@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
-const { registerUser, loginUser, logoutUser } = require('../controller/authController');
+const { registerUser, loginUser, verifyUser, getUser, logoutUser } = require('../controller/authController');
 const rateLimit = require('express-rate-limit');
 
 // middleware
@@ -23,6 +23,10 @@ router.get('/', (req, res) => {
 })
 router.post('/register', registerUser);
 router.post('/login', loginLimiter, loginUser);
-router.get('/logout', logoutUser)
+router.post('/logout', logoutUser)
+router.get('/verify', verifyUser, (req, res) => {
+    return res.status(200).json({status: true, message: 'Authorized'});
+})
+router.get('/user', verifyUser, getUser)
 
 module.exports = router

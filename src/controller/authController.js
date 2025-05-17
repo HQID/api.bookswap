@@ -2,6 +2,7 @@ const User = require('../models/User');
 const {hashPassword, comparePassword} = require('../helper/auth');
 const jwt = require('jsonwebtoken');
 
+
 const registerUser = async (req, res) => {
     try {
         const {fullname, username, gender, city, address, phone, email, password, confirmPassword} = req.body;
@@ -60,12 +61,25 @@ const loginUser = async (req, res) => {
 
         // check password
         const match = await comparePassword(password, user.password);
+
+        if(match) {
+            jwt.sign({email: user.email, fullname: user.fullname, id: user._id, username: user.username, location: user.city, address: user.address, gender: user.gender, phone: user.phone}, process.env.JWT_SECRET, {expiresIn: '8h'}, (err, token) => {
+                if(err) throw err;
+                res.cookie('token', token, {
+                    maxAge: 8 * 60 * 60 * 1000,
+                    httpOnly: true,
+                    sameSite: 'None',
+                    secure: true
+                }).json({
+                    message: 'Login berhasil',
+                    user: user
+                })
+            })
+        }
         
         if(!match) {
             return res.status(400).json({error: 'Password salah'});
         }
-
-        return res.status(200).json({message: 'Login berhasil', data: user});
 
     } catch(e) {
         console.log(e)
@@ -73,7 +87,21 @@ const loginUser = async (req, res) => {
     }
 }
 
-const verifyUser = async (req, res) => {
+const getUser = (req, res) => {
+    try {
+        const user = req.user
+            if(user) {
+                res.json(user)
+            } else {
+                res.json(null)
+            }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({error: 'Server Error'})
+    }
+}
+
+const verifyUser = async (req, res, next) => {
     const {token} = req.cookies;
     if(!token) {
         return res.status(401).json({error: 'Unauthorized'});
@@ -96,6 +124,7 @@ const logoutUser = async (req, res) => {
 module.exports = {
     registerUser,
     loginUser,
+    getUser,
     verifyUser,
     logoutUser
 }
