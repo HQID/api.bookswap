@@ -3,6 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const { registerUser, loginUser, verifyUser, getUser, logoutUser } = require('../controller/authController');
 const rateLimit = require('express-rate-limit');
+const User = require('../models/User');
 
 // middleware
 router.use(
@@ -28,5 +29,14 @@ router.get('/verify', verifyUser, (req, res) => {
     return res.status(200).json({status: true, message: 'Authorized'});
 })
 router.get('/user', verifyUser, getUser)
+router.get('/allUser', async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.status(200).json(users);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+})
 
 module.exports = router

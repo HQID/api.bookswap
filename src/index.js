@@ -21,6 +21,8 @@ app.use(express.urlencoded({ extended: true })); // Menangani request body form-
 
 app.use('/', require('./routes/authRoutes'));
 app.use('/', require('./routes/bookRoutes'))
+app.use('/', require('./routes/cartRoutes'));
+app.use('/', require('./routes/tradeRoutes'));
 
 
 const port = process.env.PORT

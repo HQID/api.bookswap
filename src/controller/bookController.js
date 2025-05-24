@@ -73,6 +73,20 @@ const getBooks = async (req, res) => {
     }
 }
 
+const getBookById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const book = await Book.findById(id);
+        if (!book) {
+            return res.status(404).json({ error: "Buku tidak ditemukan" });
+        }
+        res.status(200).json({ data: book });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data buku" });
+    }
+}
+
 const getMyBooks = async (req, res) => {
     try {
         const books = await Book.find({ userId: req.body.userId });
@@ -97,4 +111,4 @@ const deleteBook = async (req, res) => {
     }
 }
 
-module.exports = { addBook, getBooks, getMyBooks, deleteBook };
+module.exports = { addBook, getBooks, getMyBooks, getBookById, deleteBook };
