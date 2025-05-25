@@ -65,7 +65,7 @@ const addBook = async (req, res) => {
 
 const getBooks = async (req, res) => {
     try {
-        const books = await Book.find({});
+        const books = await Book.find({}).populate('userId', 'fullname username city address phone email');
         res.status(200).json({ data: books });
     } catch (error) {
         console.error(error);
@@ -76,7 +76,7 @@ const getBooks = async (req, res) => {
 const getBookById = async (req, res) => {
     const { id } = req.params;
     try {
-        const book = await Book.findById(id);
+        const book = await Book.findById(id).populate('userId', 'fullname username city address phone email');
         if (!book) {
             return res.status(404).json({ error: "Buku tidak ditemukan" });
         }

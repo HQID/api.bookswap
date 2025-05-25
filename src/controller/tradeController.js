@@ -1,5 +1,6 @@
 
-const TradeRequest =  require('../models/Trade');  
+const TradeRequest =  require('../models/Trade');
+const Book = require('../models/Book');
 
 const getAllTrade = async (req, res) => {
     try {
@@ -74,6 +75,8 @@ const completeTrade = async (req, res) => {
     try {
         const { id, userId } = req.body;
         const trade = await TradeRequest.findById(id);
+        const bookRequester = await Book.findById(trade.requesterBook);
+        const bookReceiver = await Book.findById(trade.receiverBook);
         
         if (!trade) {
             return res.status(404).json({ error: 'Permintaan tukar tidak ditemukan' });
@@ -94,8 +97,12 @@ const completeTrade = async (req, res) => {
         // Jika keduanya sudah completed
         if (trade.requesterCompleted && trade.receiverCompleted) {
             trade.status = 'completed';
+            bookRequester.status = 'exchanged';
+            bookReceiver.status = 'exchanged';
         }
 
+        await bookRequester.save();
+        await bookReceiver.save();
         await trade.save();
         res.json({ message: 'Status updated', data: trade });
 

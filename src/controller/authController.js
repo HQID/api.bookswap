@@ -112,7 +112,7 @@ const verifyUser = async (req, res, next) => {
         next();
     } catch(e) {
         console.log(e)
-        res.status(500).json({error: 'Internal server error'});
+        res.status(500).json({status: false, error: 'Internal server error'});
     }
 }
 

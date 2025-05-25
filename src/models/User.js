@@ -7,7 +7,7 @@ const userSchema = new Schema({
     gender: {type: String, enum:['Laki-laki', 'Perempuan']},
     city: String,
     address: String,
-    phone: Number,
+    phone: String,
     email: {
         type: String,
         unique: true,

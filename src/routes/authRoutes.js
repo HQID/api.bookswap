@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
     res.json({message: 'Welcome to BookSwap API'});
 })
 router.post('/register', registerUser);
-router.post('/login', loginLimiter, loginUser);
+router.post('/login', loginUser);
 router.post('/logout', logoutUser)
 router.get('/verify', verifyUser, (req, res) => {
     return res.status(200).json({status: true, message: 'Authorized'});
