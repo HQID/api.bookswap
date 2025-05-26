@@ -4,7 +4,9 @@ const Book = require('../models/Book');
 
 const addToCart = async (req, res) => {
     try {
-        const { userId, bookId } = req.body;
+        const { bookId } = req.body;
+        const userId = req.user.id;
+        // const {userId} = req.body;
 
         // Cek apakah user ada
         const user = await User.findById(userId);
@@ -19,8 +21,6 @@ const addToCart = async (req, res) => {
         const cart = new Cart({
             userId,
             bookId,
-            title: book.title,
-            image: book.image,
             status: 'wishlist'
         });
 
@@ -34,7 +34,15 @@ const addToCart = async (req, res) => {
 
 const getCart = async (req, res) => {
     try {
-        const cart = await Cart.find({ userId: req.body.userId }).populate('bookId', 'title image').populate('userId', 'username');
+        const cart = await Cart.find({ userId: req.user.id })
+            .populate({
+                path: 'bookId',
+                select: 'title image userId',
+                populate: {
+                    path: 'userId',
+                    select: 'username email'
+                }
+            });
         res.status(200).json({ message: "Berhasil mendapatkan keranjang", data: cart });
     }
     catch(e) {

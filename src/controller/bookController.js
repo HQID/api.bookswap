@@ -4,9 +4,10 @@ const Book = require('../models/Book');
 
 const addBook = async (req, res) => {
     try {
-        const { title, author, userId, purchase } = req.body;
+        const { title, author, purchase } = req.body;
+        const id = req.user.id;
  
-        const user = await User.findById(userId);
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ error: "User tidak ditemukan" });
         }
@@ -20,7 +21,7 @@ const addBook = async (req, res) => {
         }
         
         const buku = {
-            userId,
+            userId: id,
             title,
             purchase,
             description: bookData.description || "Deskripsi tidak tersedia",
@@ -38,7 +39,7 @@ const addBook = async (req, res) => {
 
         // Ekstrak informasi dari API
         const newBook = new Book({
-            userId,
+            userId: id,
             title,
             purchase,
             description: bookData.description || "Deskripsi tidak tersedia",
@@ -89,7 +90,7 @@ const getBookById = async (req, res) => {
 
 const getMyBooks = async (req, res) => {
     try {
-        const books = await Book.find({ userId: req.body.userId });
+        const books = await Book.find({ userId: req.user.id });
         res.status(200).json({ data: books });
     } catch (error) {
         console.error(error);
