@@ -8,7 +8,7 @@ const { verifyUser } = require('../controller/authController');
 router.use(
     cors({
         credentials: true,
-        origin: ['http://localhost:3003']
+        origin: [process.env.BACKEND, process.env.FRONTEND]
     })
 );
 

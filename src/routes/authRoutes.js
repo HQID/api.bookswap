@@ -4,12 +4,13 @@ const cors = require('cors');
 const { registerUser, loginUser, verifyUser, getUser, logoutUser } = require('../controller/authController');
 const rateLimit = require('express-rate-limit');
 const User = require('../models/User');
+require('dotenv').config();
 
 // middleware
 router.use(
     cors({
         credentials: true,
-        origin: ['http://localhost:3003', 'http://localhost:5173']
+        origin: [process.env.BACKEND, process.env.FRONTEND]
     })
 );
 

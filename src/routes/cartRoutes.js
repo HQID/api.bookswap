@@ -3,11 +3,12 @@ const router = express.Router();
 const cors = require('cors');
 const { addToCart, getCart, removeFromCart } = require('../controller/cartController');
 const { verifyUser } = require('../controller/authController');
+require('dotenv').config();
 
 router.use(
     cors({
         credentials: true,
-        origin: ['http://localhost:3003']
+        origin: [process.env.BACKEND, process.env.FRONTEND]
     })
 );
 
