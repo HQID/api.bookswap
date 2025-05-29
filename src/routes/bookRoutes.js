@@ -3,6 +3,7 @@ const router = express.Router();
 const cors = require('cors');
 const {addBook, getBooks, getMyBooks, deleteBook, getBookById} = require('../controller/bookController')
 const { verifyUser } = require('../controller/authController');
+require('dotenv').config();
 
 // middleware
 router.use(
