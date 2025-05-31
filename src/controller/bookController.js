@@ -98,6 +98,56 @@ const getMyBooks = async (req, res) => {
     }
 }
 
+const searchBooks = async (req, res) => {
+    const { query } = req.body;
+    try {
+        const books = await Book.find({
+            $or: [
+                { title: { $regex: query, $options: 'i' } },
+                { authors: { $regex: query, $options: 'i' } },
+                { category: { $regex: query, $options: 'i' } }
+            ]
+        })
+
+        if (books.length === 0) {
+            return res.status(404).json({ error: "Buku tidak ditemukan" });
+        }
+
+        res.status(200).json({ data: books });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan saat mencari buku" });
+    }
+}
+
+const getLocation = async (req, res) => {
+    try {
+        const locations = await Book.distinct('location')
+
+        if (!location || locations.length === 0) {
+            return res.status(404).json(null);
+        }
+
+        res.status(200).json({ data: locations });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data lokasi" });
+    }
+}
+
+const filteredLocation = async (req, res) => {
+    const { location } = req.body;
+    try {
+        const books = await Book.find({location});
+        if (books.length === 0) {
+            return res.status(404).json(null);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Terjadi kesalahan saat mengambil data buku berdasarkan lokasi" });
+    }
+}
+
 const deleteBook = async (req, res) => {
     const { id } = req.params;
     try {
