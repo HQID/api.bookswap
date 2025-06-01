@@ -6,16 +6,21 @@ const addToCart = async (req, res) => {
     try {
         const { bookId } = req.body;
         const userId = req.user.id;
-        // const {userId} = req.body;
 
         // Cek apakah user ada
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "User tidak ditemukan" });
         }
+
         const book = await Book.findById(bookId);
         if (!book) {
             return res.status(404).json({ error: "Buku tidak ditemukan" });
+        }
+
+        // Cek apakah buku milik user sendiri
+        if (book.userId.toString() === userId) {
+            return res.status(400).json({ error: "Tidak dapat menambahkan buku milik sendiri ke keranjang" });
         }
 
         const cart = new Cart({
@@ -27,7 +32,7 @@ const addToCart = async (req, res) => {
         await cart.save();
         res.status(201).json({ message: "Buku ditambahkan ke keranjang", data: cart });
 
-    } catch(e) {
+    } catch (e) {
         res.status(500).json({ error: "Terjadi kesalahan" });
     }
 }

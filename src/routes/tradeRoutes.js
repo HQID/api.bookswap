@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const cors = require('cors');
-const { getTradeRequests, getMyTrade, requestTrade, respondTrade, completeTrade, getAllTrade } = require('../controller/tradeController');
+const { verifyUser } = require('../controller/authController');
+const { getTradeRequests, getMyTrade, requestTrade, respondTrade, completeTrade, getAllTrade, deleteTrade} = require('../controller/tradeController');
 require('dotenv').config();
 
 router.use(
@@ -12,10 +13,11 @@ router.use(
 );
 
 router.get('/trade/all', getAllTrade);
-router.get('/trade', getTradeRequests);
-router.get('/trade/my', getMyTrade);
-router.post('/trade/request', requestTrade);
-router.patch('/trade/respond', respondTrade);
-router.patch('/trade/complete', completeTrade);
+router.delete('/trade/delete/:id', deleteTrade);
+router.get('/trade', verifyUser, getTradeRequests);
+router.get('/trade/my', verifyUser, getMyTrade);
+router.post('/trade/request', verifyUser, requestTrade);
+router.patch('/trade/respond', verifyUser, respondTrade);
+router.patch('/trade/complete', verifyUser, completeTrade);
 
 module.exports = router;
