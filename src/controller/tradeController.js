@@ -34,7 +34,7 @@ const getTradeRequests = async (req, res) => {
         const trades = await TradeRequest.find({
             receiver: userId,
             status: { $in: ['pending', 'accepted'] }
-        }).populate('requester', 'username').populate('receiver', 'username').populate('requesterBook').populate('receiverBook');
+        }).populate('requester', 'username phone').populate('receiver', 'username').populate('requesterBook').populate('receiverBook');
 
         res.status(200).json({ message: 'Berhasil mendapatkan trade saya', data: trades });
     } catch (error) {
